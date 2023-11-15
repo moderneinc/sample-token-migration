@@ -15,8 +15,6 @@
  */
 package org.openrewrite.authz;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.MethodMatcher;
@@ -25,14 +23,16 @@ import org.openrewrite.java.tree.Expression;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.marker.SearchResult;
 
-@Value
-@EqualsAndHashCode(callSuper = false)
 public class FindHttpHeaders extends Recipe {
 
     @Option(displayName = "Header name",
             description = "The name of the header to find.",
             example = "Authorization")
-    String headerName;
+    private final String headerName;
+
+    public FindHttpHeaders(String headerName) {
+        this.headerName = headerName;
+    }
 
     @Override
     public String getDisplayName() {

@@ -88,4 +88,50 @@ public class AddAlternativeAuthorizationHeaderTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void useExistingProvider() {
+        //language=java
+        rewriteRun(
+          spec -> spec.typeValidationOptions(TypeValidation.none()),
+          java(
+            """
+              package com.example;
+                            
+              public class IdaProvider {
+                  public String getAuthorizationHeader() {
+                      return "NEW_AUTHORIZATION";
+                  }
+              }
+              """
+          ),
+          //language=java
+          java(
+            """
+              import org.springframework.http.HttpHeaders;
+
+              class Test {
+                            
+                  void test(HttpHeaders headers) {
+                      headers.add(HttpHeaders.AUTHORIZATION, "Bearer token");
+                  }
+              }
+              """,
+            """
+              import com.example.IdaProvider;
+              import org.springframework.http.HttpHeaders;
+
+              class Test {
+                  
+                  IdaProvider idaProvider;
+
+                  void test(HttpHeaders headers) {
+                      headers.add(HttpHeaders.AUTHORIZATION, "Bearer token");
+                      headers.add("NEW_AUTHORIZATION", idaProvider.getAuthorizationHeader());
+                  }
+              }
+              """
+          )
+        );
+    }
 }
