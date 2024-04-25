@@ -60,7 +60,7 @@ public class AddAlternativeAuthorizationHeader extends ScanningRecipe<AtomicRefe
             @Override
             public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
                 JavaType.Class fqn = TypeUtils.asClass(classDecl.getType());
-                if (fqn != null && fqn.getClassName().equals("IdaProvider")) {
+                if (fqn != null && "IdaProvider".equals(fqn.getClassName())) {
                     acc.set(fqn);
                 }
                 return super.visitClassDeclaration(classDecl, ctx);
